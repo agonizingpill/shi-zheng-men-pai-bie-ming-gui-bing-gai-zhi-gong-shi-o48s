@@ -1,5 +1,6 @@
 from .models import Entrance,Redirect,Proposal,Notice
 from .common import *
+def number_snapshot(e):return {'code':e.code,'street':e.street,'number':e.number,'sub':e.sub or '','label':e.label}
 def resolve_root(s,id):
  get(s,Entrance,id);chain=[id];cur=id;mapping={x.source_id:x.target_id for x in rows(s,Redirect) if x.state=='active'}
  while cur in mapping:
@@ -10,7 +11,8 @@ def resolve_root(s,id):
 def activate(s,p,now):
  if any(x.state=='active' and x.source_id==p.source_id for x in rows(s,Redirect)):fail('入口已有生效归并，请先回滚')
  if p.source_id in resolve_root(s,p.target_id)['chain']:fail('重定向成环，拒绝生效')
- r=Redirect(source_id=p.source_id,target_id=p.target_id,proposal_id=p.id,created=now);s.add(r);s.flush();return r
+ src=get(s,Entrance,p.source_id);tgt=get(s,Entrance,p.target_id)
+ r=Redirect(source_id=p.source_id,target_id=p.target_id,proposal_id=p.id,created=now,source_number_snapshot=number_snapshot(src),target_number_snapshot=number_snapshot(tgt));s.add(r);s.flush();return r
 def rollback(s,id,d):
  lock(s);r=get(s,Redirect,id)
  if r.state!='active':fail('该映射已经回滚')

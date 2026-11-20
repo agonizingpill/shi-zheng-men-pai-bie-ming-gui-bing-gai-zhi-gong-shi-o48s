@@ -5,7 +5,7 @@ class Input(BaseModel):
 class Login(Input):
  email:str;password:str
 class EntranceIn(Input):
- code:str=Field(min_length=2,max_length=40);street:str=Field(min_length=2,max_length=80);number:int=Field(ge=1,le=99999);label:str=Field(min_length=3,max_length=100);lat:float=Field(ge=-90,le=90);lng:float=Field(ge=-180,le=180)
+ code:str=Field(min_length=2,max_length=40);street:str=Field(min_length=2,max_length=80);number:int=Field(ge=1,le=99999);sub:str=Field(default='',max_length=20,pattern=r'^[0-9]{0,20}$');label:str=Field(min_length=3,max_length=100);lat:float=Field(ge=-90,le=90);lng:float=Field(ge=-180,le=180)
 class LocationIn(Input):
  lat:float=Field(ge=-90,le=90);lng:float=Field(ge=-180,le=180);reason:str=Field(min_length=8,max_length=400)
 class AliasIn(Input):
@@ -22,5 +22,7 @@ class NoticeIn(Input):
  proposal_id:int;days:int=Field(ge=3,le=30)
 class ReasonIn(Input):
  reason:str=Field(min_length=8,max_length=500)
+class ReviewIn(Input):
+ review_reason:str=Field(min_length=8,max_length=300)
 class ClockIn(Input):
  now:str;reason:str=Field(min_length=8,max_length=500)

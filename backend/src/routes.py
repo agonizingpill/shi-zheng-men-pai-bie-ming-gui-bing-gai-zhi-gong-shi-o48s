@@ -36,6 +36,10 @@ def matching(u=Depends(current)):
  return d
 @router.post('/proposals')
 def pcreate(d:ProposalIn,u=Depends(current)):return change(u,'归并提案',lambda s:proposal.create(s,d.model_dump()))
+@router.post('/proposals/{id}/review')
+def preview(id:int,d:ReviewIn,u=Depends(current)):return change(u,'退回复核',lambda s:proposal.send_back(s,id,d.model_dump()),True)
+@router.post('/proposals/{id}/resubmit')
+def presubmit(id:int,d:ReasonIn,u=Depends(current)):return change(u,'重新提交提案',lambda s:proposal.resubmit(s,id,d.model_dump()))
 @router.post('/objections')
 def ocreate(d:ObjectionIn,u=Depends(current)):return change(u,'登记异议',lambda s:proposal.object_to(s,d.model_dump()))
 @router.post('/objections/{id}/resolve')
